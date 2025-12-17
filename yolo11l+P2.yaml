@@ -1,20 +1,16 @@
-# Ultralytics 🚀 AGPL-3.0 License - https://ultralytics.com/license
-
-# Ultralytics YOLO11 object detection model with P3/8 - P5/32 outputs
-# Model docs: https://docs.ultralytics.com/models/yolo11
-# Task docs: https://docs.ultralytics.com/tasks/detect
+# Ultralytics YOLO11-Large for VisDrone (With P2 Head for Small Objects)
 
 # Parameters
 nc: 10 # number of classes
-scales: # model compound scaling constants, i.e. 'model=yolo11n.yaml' will call yolo11.yaml with scale 'n'
+scales: # model compound scaling constants
   # [depth, width, max_channels]
   l: [1.00, 1.00, 512] # 显式指定使用 Large 模型的缩放系数
 
-# YOLO11n backbone
+# YOLO11l backbone
 backbone:
   # [from, repeats, module, args]
   - [-1, 1, Conv, [64, 3, 2]] # 0-P1/2
-  - [-1, 1, Conv, [128, 3, 2]] # 1-P2/4
+  - [-1, 1, Conv, [128, 3, 2]] # 1-P2/4  <--- 小目标的关键特征层
   - [-1, 2, C3k2, [256, False, 0.25]]
   - [-1, 1, Conv, [256, 3, 2]] # 3-P3/8
   - [-1, 2, C3k2, [512, False, 0.25]]
@@ -25,7 +21,7 @@ backbone:
   - [-1, 1, SPPF, [1024, 5]] # 9
   - [-1, 2, C2PSA, [1024]] # 10
 
-# YOLO11n head
+# YOLO11l head (Modified with P2)
 head:
   - [-1, 1, nn.Upsample, [None, 2, "nearest"]]
   - [[-1, 6], 1, Concat, [1]] # cat backbone P4
@@ -35,12 +31,22 @@ head:
   - [[-1, 4], 1, Concat, [1]] # cat backbone P3
   - [-1, 2, C3k2, [256, False]] # 16 (P3/8-small)
 
+  # --- 新增 P2 层融合 (关键修改) ---
+  - [-1, 1, nn.Upsample, [None, 2, "nearest"]]
+  - [[-1, 1], 1, Concat, [1]] # cat backbone P2 (高分辨率特征)
+  - [-1, 2, C3k2, [128, False]] # 19 (P2/4-tiny) <--- 专门检测极小目标
+
+  # --- 检测头输出 ---
+  - [-1, 1, Conv, [128, 3, 2]]
+  - [[-1, 16], 1, Concat, [1]] # cat head P3
+  - [-1, 2, C3k2, [256, False]] # 22 (P3/8-small)
+
   - [-1, 1, Conv, [256, 3, 2]]
   - [[-1, 13], 1, Concat, [1]] # cat head P4
-  - [-1, 2, C3k2, [512, False]] # 19 (P4/16-medium)
+  - [-1, 2, C3k2, [512, False]] # 25 (P4/16-medium)
 
   - [-1, 1, Conv, [512, 3, 2]]
   - [[-1, 10], 1, Concat, [1]] # cat head P5
-  - [-1, 2, C3k2, [1024, True]] # 22 (P5/32-large)
+  - [-1, 2, C3k2, [1024, True]] # 28 (P5/32-large)
 
-  - [[16, 19, 22], 1, Detect, [nc]] # Detect(P3, P4, P5)
+  - [[19, 22, 25, 28], 1, Detect, [nc]] # Detect(P2, P3, P4, P5) <--- 4个检测头
