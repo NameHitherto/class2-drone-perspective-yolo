@@ -26,6 +26,7 @@ from .block import (
     CIB,
     DFL,
     ELAN1,
+    EMA,
     PSA,
     SPP,
     SPPELAN,
@@ -58,6 +59,7 @@ from .block import (
     RepVGGDW,
     ResNetLayer,
     SCDown,
+    SPDConv,
     TorchVision,
 )
 from .conv import (

@@ -21,6 +21,7 @@ __all__ = (
     "CIB",
     "DFL",
     "ELAN1",
+    "EMA",
     "PSA",
     "SPP",
     "SPPELAN",
@@ -51,6 +52,7 @@ __all__ = (
     "RepVGGDW",
     "ResNetLayer",
     "SCDown",
+    "SPDConv",
     "TorchVision",
 )
 

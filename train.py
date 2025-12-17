@@ -9,7 +9,7 @@ def train_drone_model():
     weight_path = os.path.join(current_dir, 'weight', weight_name)
     if os.path.exists(weight_path):
         # model = YOLO(weight_path)
-        model = YOLO('yolo11l.yaml').load(weight_path) 
+        model = YOLO('yolo11l+P2+SPDConv+EMA.yaml').load(weight_path) 
     else:
         print(f"模型权重文件未找到: {weight_path}. 进行下载...")
         model = YOLO(weight_name) 
@@ -44,7 +44,7 @@ def train_drone_model():
         patience=20,            # 早停机制，20轮无提升则停止
         
         project='runs/train',   # 保存路径
-        name='visdrone_yolo11_02', # 实验名称
+        name='visdrone_yolo11_best', # 实验名称
         exist_ok=True           # 覆盖同名实验
     )
 
