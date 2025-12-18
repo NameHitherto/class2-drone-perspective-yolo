@@ -88,16 +88,16 @@ def run_ablation_studies():
         # 保持与 train.py 一致的训练参数，确保公平对比
         train_args = {
             'data': 'visdrone.yaml',
-            'epochs': 50,           # 统一训练轮数
+            'epochs': 100,           # 统一训练轮数
             'imgsz': 1024,          # 统一输入分辨率 (针对 VisDrone 小目标)
-            'batch': 4,             # 统一 Batch Size (根据显存调整)
-            'workers': 0,           # Windows 优化
+            'batch': 16,             # 统一 Batch Size (根据显存调整)
+            'workers': 8,           # Windows 优化
             'project': 'runs/ablation',
             'name': exp['name'],
             'exist_ok': True,
             'verbose': False,       # 减少输出
             'device': 0 if torch.cuda.is_available() else 'cpu',
-            'cache': False,
+            'cache': True,
             # 其他增强参数保持默认或与 train.py 一致
             'patience': 20,
             'close_mosaic': 10,
