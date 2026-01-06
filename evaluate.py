@@ -4,7 +4,7 @@ import glob
 from ultralytics import YOLO
 import pandas as pd
 
-def evaluate_model(model_path='runs/train/visdrone_yolo11_02/weights/best.pt', data_yaml='visdrone.yaml'):
+def evaluate_model(model_path='best.pt', data_yaml='visdrone.yaml'):
     """
     评估模型性能：
     1. 定量评估：计算各类别 AP 和 mAP

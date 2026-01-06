@@ -9,7 +9,7 @@ def train_drone_model():
     weight_path = os.path.join(current_dir, 'weight', weight_name)
     if os.path.exists(weight_path):
         # model = YOLO(weight_path)
-        model = YOLO('yolo11l+P2+SPDConv+EMA.yaml').load(weight_path) 
+        model = YOLO('yolo11l+P2+EMA.yaml').load(weight_path) 
     else:
         print(f"模型权重文件未找到: {weight_path}. 进行下载...")
         model = YOLO(weight_name) 
@@ -17,13 +17,13 @@ def train_drone_model():
     # 2. 训练参数配置 (算法策略核心)
     results = model.train(
         data='visdrone.yaml',   # 数据集配置文件
-        epochs=50,             # 训练轮数 后续可以调整到100轮及以上
+        epochs=80,             # 训练轮数 后续可以调整到100轮及以上
 
         # --- 性能优化关键参数 ---
         imgsz=1024,             # [关键] 增大输入分辨率以检测小目标 (默认640)
         batch=4,               # 根据显存调整，1024分辨率下显存占用较大
         cache=False,           # [优化] 开启RAM缓存，大幅减少磁盘IO时间,但是会占用大量内存
-        workers=0,              # [优化] 增加数据加载线程 
+        workers=4,              # [优化] 增加数据加载线程 
         # freeze=10,            # [可选] 冻结骨干网络前 10 层，仅训练头部，极大加快速度但可能略微降低精度
         
         device=0,               # 使用 GPU 0
@@ -44,7 +44,7 @@ def train_drone_model():
         patience=20,            # 早停机制，20轮无提升则停止
         
         project='runs/train',   # 保存路径
-        name='visdrone_yolo11_best', # 实验名称
+        name='yolo11l+P2+EMA', # 实验名称
         exist_ok=True           # 覆盖同名实验
     )
 
