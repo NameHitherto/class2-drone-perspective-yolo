@@ -1,0 +1,19 @@
+# Core
+numpy>=1.23
+PyYAML>=6.0
+pillow>=9.5
+opencv-python>=4.8
+tqdm>=4.66
+pandas>=2.0
+
+# UI (optional but required for gui_app.py)
+PyQt5>=5.15.9
+
+# Deep Learning
+# Install torch/torchvision per your CUDA version from https://pytorch.org/get-started/locally/
+torch>=2.1
+torchvision>=0.16
+
+# Note:
+# This repo contains a local 'ultralytics/' package. If you prefer pip version instead, install:
+# ultralytics==8.3.237
